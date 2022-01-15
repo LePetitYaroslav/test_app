@@ -8,8 +8,7 @@ class CreateAuth extends StatefulWidget {
 }
 
 class _CreateAuthState extends State<CreateAuth> {
-  
-
+  List<String> password = [];
   Widget styleText(String text) {
     return Text(
       text,
@@ -19,7 +18,6 @@ class _CreateAuthState extends State<CreateAuth> {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,70 +63,61 @@ class _CreateAuthState extends State<CreateAuth> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children:  [
-              PinButton(), PinButton(), PinButton(), PinButton(),
-              
+            children: [
+              for (var i = 0; i < 4; i++)
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: PinIndicator(isActive: true),
+                ),
             ],
           ),
           const SizedBox(
             height: 100,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              NumberButton(
-                number: 1,
-              ),
-              NumberButton(
-                number: 2,
-              ),
-              NumberButton(
-                number: 3,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              NumberButton(
-                number: 4,
-              ),
-              NumberButton(
-                number: 5,
-              ),
-              NumberButton(
-                number: 6,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
+          GridView.builder(
+            shrinkWrap:true,
+            itemCount: 9,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 20,
+              childAspectRatio: 1 / 0.5,
+            ),
+            itemBuilder: (context, index) {
+              return PinButton(
+                number: index + 1,
+                onPress: (number) => print(number),
+              );
+            },
+
+            //   padding: EdgeInsets.symmetric(horizontal: 20),
+            //   shrinkWrap: true,
+            //   crossAxisCount: 3,
+            //   mainAxisSpacing: 20,
+            //   childAspectRatio: 1 / 0.6,
+            //   children: [
+            //     for (var i = 0; i < 12; i++)
+            //       PinButton(
+            //         number: 1,
+            //         onPress: (number) => print(number),
+            //       )
+            //   ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              NumberButton(
-                number: 7,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 50,
               ),
-              NumberButton(
-                number: 8,
+              FittedBox(
+                fit: BoxFit.fill,
+                child: PinButton(
+                  number: 0,
+                  onPress: (number) => print(number),
+                ),
               ),
-              NumberButton(
-                number: 9,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              NumberButton(
-                number: 0,
+              IconButton(
+                onPressed: password.removeLast,
+                icon: const Icon(Icons.arrow_back),
               ),
             ],
           ),
@@ -141,26 +130,22 @@ class _CreateAuthState extends State<CreateAuth> {
   }
 }
 
-class NumberButton extends StatelessWidget {
+class PinButton extends StatelessWidget {
   final int number;
-  // final ValueSetter<int> onPress;
+  final ValueSetter<int> onPress;
 
-  // List<String> password = [];
-
-  const NumberButton({
+  const PinButton({
     Key? key,
     required this.number,
-    
-    // required this.password,
+    required this.onPress,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      // onPressed: () => onPress.call(password.add(number.toString())),   
-      /* - должна быть такая реализация,далее через длину массива активироваться Radio Btn,и когда длина массива 4 либо новый роут либо перересовка 'Create Pin' с последующим поп меню. */
-      /* но у меня ппц мало опыта,поэтому такой говно код :) еще и не отрефакторенный,ибо работаю)) */
-      onPressed: () {},
+      onPressed: () {
+        onPress(number);
+      },
       style: ElevatedButton.styleFrom(
         shadowColor: Colors.transparent,
         shape: const CircleBorder(),
@@ -181,28 +166,24 @@ class NumberButton extends StatelessWidget {
   }
 }
 
-class PinButton extends StatefulWidget {
-  const PinButton({Key? key}) : super(key: key);
+class PinIndicator extends StatelessWidget {
+  final bool isActive;
+  const PinIndicator({
+    required this.isActive,
+    Key? key,
+  }) : super(key: key);
 
-  @override
-  _PinButtonState createState() => _PinButtonState();
-}
-
-class _PinButtonState extends State<PinButton> {
   @override
   Widget build(BuildContext context) {
-    int selectedValue = 1;
-    return Theme(
-      data: Theme.of(context).copyWith(
-        unselectedWidgetColor: const Color(0xff91a5c0),
-        
-      ),
-      child: Radio<int>(
-        activeColor: Colors.indigo[700] ,
-        splashRadius: 0,
-        value: 0,
-        groupValue: selectedValue,
-        onChanged: (value) => setState(() => selectedValue = 1),
+    return Container(
+      width: 12,
+      height: 12,
+      decoration: BoxDecoration(
+        color: isActive ? Colors.indigo[700] : Colors.white,
+        border: Border.all(
+          color: isActive ? Colors.indigo[700]! : const Color(0xff91a5c0),
+        ),
+        shape: BoxShape.circle,
       ),
     );
   }

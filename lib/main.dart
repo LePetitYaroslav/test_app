@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:test_app/widgets/auth/auth.dart';
 import 'package:test_app/widgets/main_page/main_page.dart';
 import 'package:test_app/widgets/create_auth/create_auth.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 
 void main() {
